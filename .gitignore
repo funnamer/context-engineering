@@ -2,3 +2,10 @@ node_modules/
 docs/.vitepress/dist
 docs/.vitepress/cache
 .idea/
+./code/miniMaster/.env
+./code/miniMaster/.gitignore
+./code/miniMaster/.idea/
+./code/miniMaster/workspace/
+.env
+
+
