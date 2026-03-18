@@ -1,25 +1,27 @@
 import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 
-// 1. 获取环境变量并判断
-// 如果环境变量 EDGEONE 等于 '1'，说明在 EdgeOne 环境，使用根路径 '/'
-// 否则默认是 GitHub Pages 环境，使用仓库子路径 '/easy-vecdb/'
-const isEdgeOne = process.env.EDGEONE === '1'
-const baseConfig = isEdgeOne ? '/' : '/repo-template/'
+// 自动判断部署环境
+// EdgeOne 环境 → 根路径 /
+// GitHub Pages / 本地 → 仓库子路径 /context-engineering/
+const isEdgeOne = !!process.env.EDGEONE;
+const baseConfig = isEdgeOne ? '/' : '/context-engineering/';
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: "Datawhale开源教程",
-  description: "AI前沿知识开源教程",
+  title: "Context Engineering 教程",
+  description: "上下文工程入门与实战教程",
+  // 自动切换基础路径
   base: baseConfig,
   markdown: {
     math: true
   },
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     logo: '/datawhale-logo.png',
+
+    // 修正为你的仓库地址
     nav: [
-      { text: 'PDF版本下载', link: 'https://github.com/datawhalechina/repo-template/releases' },
+      { text: 'PDF版本下载', link: 'https://github.com/funnamer/context-engineering/releases' },
     ],
     search: {
       provider: 'local',
@@ -54,12 +56,14 @@ export default defineConfig({
       }
     ],
 
+    // 修正为你的 GitHub 地址
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/datawhalechina/repo-template' }
+      { icon: 'github', link: 'https://github.com/funnamer/context-engineering' }
     ],
 
+    // 修正在线编辑链接
     editLink: {
-      pattern: 'https://github.com/datawhalechina/repo-template/blob/main/docs/:path'
+      pattern: 'https://github.com/funnamer/context-engineering/blob/main/docs/:path'
     },
 
     footer: {
