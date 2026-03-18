@@ -9,7 +9,7 @@ const baseConfig = isEdgeOne ? '/' : '/context-engineering/';
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: "Context Engineering 教程",
+  title: "Dive Into Context Engineering",
   description: "上下文工程入门与实战教程",
   // 自动切换基础路径
   base: baseConfig,

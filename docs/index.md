@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Datawhale开源教程"
-  text: "AI前沿知识开源教程"
+  text: "Dive Into Context Engineering"
   tagline: 开始学起来吧~
   image:
     src: /learning.GIF

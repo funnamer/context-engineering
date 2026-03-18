@@ -1,4 +1,4 @@
-<h1 align="center"> Context Engineering - 上下文工程实战指南 </h1>
+<h1 align="center">Dive Into Context Engineering - 上下文工程实战指南 </h1>
 
 > [!WARNING]
 > 🧪 Beta 公测版本提示：教程主体已完成，正在优化细节，欢迎大家提 Issue 反馈问题或建议。
