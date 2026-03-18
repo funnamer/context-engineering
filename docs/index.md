@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: 开始学习
-      link: /chapter1/
+      link: /chapter1/what_is_context_engineering
 
 features:
   - title: 💥 前沿
