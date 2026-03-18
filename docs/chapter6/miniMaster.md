@@ -3,32 +3,9 @@
 ## 6.1 项目概述
 
 miniMaster 是一个最小化的 Claude Code Skills 实现，展示了如何构建一个基于技能（Skills）系统的 AI Agent 框架。通过这个项目，可以理解上下文工程的核心实践：**动态调度**和**按需加载**。
-```mermaid
-graph TB
-    User[用户输入] --> CLI[cli.py 命令行接口]
-    CLI --> App[app.py 应用构建]
-    
-    App --> Config[配置管理]
-    App --> Skills[技能系统]
-    App --> Tools[工具系统]
-    App --> Agent[Agent 循环]
-    
-    Skills --> Discovery[技能发现]
-    Skills --> Registry[技能注册表]
-    Skills --> Parser[技能解析器]
-    
-    Tools --> Bash[Bash 工具]
-    Tools --> Read[Read 工具]
-    
-    Agent --> Model[模型客户端]
-    Agent --> Loop[执行循环]
-    
-    Bash --> Runner[子进程运行器]
-    Read --> FS[文件系统]
-    
-    Runner --> OS[操作系统命令]
-    FS --> Files[项目文件]
-```
+
+![miniMaster 项目结构](structure.png)
+
 ### 项目结构
 
 ```
