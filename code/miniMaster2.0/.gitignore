@@ -49,3 +49,5 @@ htmlcov/
 
 
 !README.md
+
+.diagrams/

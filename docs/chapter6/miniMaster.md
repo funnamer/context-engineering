@@ -104,7 +104,7 @@ class WorkingMemory:
 
 ### 3. 多智能体编排 (multi-agent Orchestration)
 
-**“规划-执行-验证”三层嵌套循环 (Plan-Generate-Validate)** 的多智能体协作架构。相对于plan & slove的方式，增加了validate，每次完成任务先进行校验，校验通过后，才进入下一层。以保证在长期任务中的稳定性
+**“规划-执行-验证”三层嵌套循环 (Plan-Generate-Validate)** 的多智能体协作架构。各agent均遵循React范式。相对于plan & slove的方式，增加了validate，每次完成任务先进行校验，校验通过后，才进入下一层。以保证在长期任务中的稳定性
 每个 Agent 各司其职，拥有独立的 Prompt 和职责边界：
 
 #### 3.1 第一层循环：Plan-Agent (全局调度)
