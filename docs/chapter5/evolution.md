@@ -58,7 +58,7 @@ Context Engineering 保证了模型在单次推理时拥有“完美的情报”
 
 ---
 
-## 4.边界与总结：如何区分三者的职责？
+## 4.三者的区别
 
 为了极其清晰地明确你提到的**“Harness 包含，但 Context 不包含的是 Orchestration (编排) 和 Validation (验证)”**这一观点，我们可以将 Agent 视作一家公司：
 
@@ -68,7 +68,7 @@ Context Engineering 保证了模型在单次推理时拥有“完美的情报”
 | **Context Engineering** | 如何信息供给 | RAG、渐进式披露、分层上下文   | 模型"看不到"关键信息 |
 | **Harness Engineering** | 如何稳定执行 | 多智能体协作、评估器分离、状态管理 | 模型"做不对"复杂任务 |
 
-### 5.为什么长周期任务必须依赖 Harness？
+## 5.为什么长周期任务必须依赖 Harness？
 如同 Anthropic 团队在构建长时间运行智能体时所发现的：大模型本质上是非确定性的（Non-deterministic），它们只思考下一个 Token。如果你让它连续思考 8 个小时，微小的错误概率会不断累积。
 
 Context Engineering 只能保证每次思考时“手上拿的资料是对的”。 但只有 **Harness Engineering** 能够保证运行的过程时稳定的

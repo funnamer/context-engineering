@@ -8,8 +8,8 @@ const baseConfig = isEdgeOne ? '/' : '/self-harness/';
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: "Dive Into Context Engineering",
-  description: "上下文工程入门与实战教程",
+  title: "self-harness",
+  description: "harness-engineering快速入门与实践",
   // 自动切换基础路径
   base: baseConfig,
   markdown: {
