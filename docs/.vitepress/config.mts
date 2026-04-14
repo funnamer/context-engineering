@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 // 自动判断部署环境
 // EdgeOne 环境 → 根路径 /
 const isEdgeOne = !!process.env.EDGEONE;
-const baseConfig = isEdgeOne ? '/' : '/dive-into-context-engineering/';
+const baseConfig = isEdgeOne ? '/' : '/self-harness/';
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -20,7 +20,7 @@ export default defineConfig({
 
     // 修正为你的仓库地址
     nav: [
-      { text: 'PDF版本下载', link: 'https://github.com/funnamer/dive-into-context-engineering/releases' },
+      { text: 'PDF版本下载', link: 'https://github.com/datawhalechina/self-harness/releases' },
     ],
     search: {
       provider: 'local',
@@ -57,12 +57,12 @@ export default defineConfig({
 
     // 修正为你的 GitHub 地址
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/datawhalechina/dive-into-context-engineering' }
+      { icon: 'github', link: 'https://github.com/datawhalechina/self-harness' }
     ],
 
     // 修正在线编辑链接
     editLink: {
-      pattern: 'https://github.com/datawhalechina/dive-into-context-engineering/blob/main/docs/:path'
+      pattern: 'https://github.com/datawhalechina/self-harness/blob/main/docs/:path'
     },
 
     footer: {

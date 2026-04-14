@@ -12,6 +12,6 @@ self-harness 是一本面向开发者的开源实战教程,目前进入 Beta 内
 
 ## 📬 如何参与
 
-1. **在线阅读**:https://github.com/datawhalechina/self-harness
-2. **拉取代码**:`git clone https://github.com/datawhalechina/dive-into-context-engineering.git`
+1. **在线阅读**:https://github.com/datawhalechina/self-harness/
+2. **拉取代码**:`git clone https://github.com/datawhalechina/self-harness.git`
 3. **反馈建议**:遇到问题或有建议,直接在 GitHub 提 Issue 即可

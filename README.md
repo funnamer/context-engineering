@@ -33,12 +33,12 @@
 
 | 章节名                                                                                                                              | 简介                                                             | 状态 |
 |----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|------|
-| [第1章 总览](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter1/overview.md)                                    | 总览                                                             | ✅ |
-| [第2章 什么是提示词工程](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter2/prompt_engineering.md)                    | Prompt Engineering的概念、方法、局限性                                   | ✅ |
-| [第3章 什么是上下文工程](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter3/context_engineering.md)                   | 上下文工程的概念和方法                                                    | ✅ |
-| [第4章 长时运行下的 Harness Engineering](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter4/harness_engineering.md) | 再长时间复杂软件开发中、如何设计harness以保证agent在长时间的运行中不会出错                    | ✅ |
-| [第5章 三种工程的演进](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter5/evolution.md)                              | 这三种工程理论的演进                                                     | ✅ |
-| [第6章 miniMaster 实战项目](https://github.com/datawhalechina/repo-template/blob/main/docs/chapter6/miniMaster.md)                 | 实现一个最小的 harness 系统，包含 Tool 设计、动态工作记忆、三层嵌套循环架构。快速体验harness的设计理念 | ✅ |
+| [第1章 总览](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter1/overview.md)                                    | 总览                                                             | ✅ |
+| [第2章 什么是提示词工程](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter2/prompt_engineering.md)                    | Prompt Engineering的概念、方法、局限性                                   | ✅ |
+| [第3章 什么是上下文工程](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter3/context_engineering.md)                   | 上下文工程的概念和方法                                                    | ✅ |
+| [第4章 长时运行下的 Harness Engineering](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter4/harness_engineering.md) | 再长时间复杂软件开发中、如何设计harness以保证agent在长时间的运行中不会出错                    | ✅ |
+| [第5章 三种工程的演进](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter5/evolution.md)                              | 这三种工程理论的演进                                                     | ✅ |
+| [第6章 miniMaster 实战项目](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter6/miniMaster.md)                 | 实现一个最小的 harness 系统，包含 Tool 设计、动态工作记忆、三层嵌套循环架构。快速体验harness的设计理念 | ✅ |
 ## miniMaster 实战项目
 
 miniMaster 是一个最小的harness系统实现，展示了如何将上下文工程和 Harness 工程理论应用于实际开发。
