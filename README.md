@@ -187,7 +187,7 @@ code/miniMaster2.0/
 | 姓名 | 职责                       | GitHub |
 |:----|:-------------------------|:----|
 | 张文星 | 项目负责人、教程设计与实现            | [@funnamer](https://github.com/funnamer) |
-| 张文星 | 实践项目部分 代码优化              | [@TheCaptainUniverse](https://github.com/TheCaptainUniverse) |
+| CaptainUniverse_ | 实践项目部分 代码优化              | [@TheCaptainUniverse](https://github.com/TheCaptainUniverse) |
 
 
 
