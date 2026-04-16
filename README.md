@@ -38,16 +38,18 @@
 | [第3章 什么是上下文工程](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter3/context_engineering.md)                   | 上下文工程的概念和方法                                                    | ✅ |
 | [第4章 长时运行下的 Harness Engineering](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter4/harness_engineering.md) | 再长时间复杂软件开发中、如何设计harness以保证agent在长时间的运行中不会出错                    | ✅ |
 | [第5章 三种工程的演进](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter5/evolution.md)                              | 这三种工程理论的演进                                                     | ✅ |
-| [第6章 miniMaster 实战项目](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter6/miniMaster.md)                 | 实现一个最小的 harness 系统，包含 Tool 设计、动态工作记忆、三层嵌套循环架构。快速体验harness的设计理念 | ✅ |
+| [第6章 miniMaster 实战项目](https://github.com/datawhalechina/self-harness/blob/main/docs/chapter6/miniMaster.md)                 | 实现一个最小的 harness 系统，包含 Tool 设计、Prompt/动作协议、动态工作记忆与三层嵌套循环架构。快速体验harness的设计理念 | ✅ |
 ## miniMaster 实战项目
 
 miniMaster 是一个最小的harness系统实现，展示了如何将上下文工程和 Harness 工程理论应用于实际开发。
+在实现上，项目采用了清晰的模块化结构，把启动流程、Prompt 构造、动作协议、运行时状态和工具系统分别拆开，便于理解和扩展。
 
 ### 核心特性
 
-- **系统 Tool 设计**：包含基础系统工具（Bash、Read、Write、Edit）和搜索检索工具（Glob、Grep），所有工具遵循统一的接口规范
-- **动态工作记忆管理**：分级、动态的记忆管理，以保证智能体在处理任务时，能快速获取到必要的信息
-- **三层嵌套循环架构**：Plan-Agent（全局调度）→ Generator-Agent（执行者）→ Validate-Agent（评估者），形成完整的纠错闭环
+- **系统 Tool 设计**：包含基础系统工具（Bash、Read、Write、Edit）和搜索检索工具（Glob、Grep），并通过 `tools/core` 中的 `ToolCatalog + discover_tools + ToolService` 完成统一管理
+- **Prompt 与动作协议**：将 Prompt 构造、角色动作策略、原生 function call 协议拆分到 `prompting/` 中，避免 Prompt 和代码校验规则分叉
+- **动态工作记忆管理**：不仅支持超长上下文摘要，还会先压缩单次工具结果，减少长任务中的 Prompt 膨胀
+- **三层嵌套循环架构**：Plan-Agent（全局调度）→ Generator-Agent（执行者）→ Validate-Agent（评估者），并补充重复动作防护、只读工具缓存与验证收口逻辑，形成更稳定的纠错闭环
 
 ### 智能体架构图
 ![flowchart.png](docs/public/flowchart.png)
@@ -63,8 +65,8 @@ plan-agent
 🔄 Plan-Agent 第 1 次迭代
 ============================================================
 📋 Plan-Agent 选择工具: init_tasks
-📋 Plan-Agent 参数: {'tasks': ['扫描当前目录结构，识别所有项目', '收集每个项目的基本信息', '分析项目状态和进度', '整理成结构化的项目报告']}
-✅ 已初始化任务列表: ['扫描当前目录结构，识别所有项目', '收集每个项目的基本信息', '分析项目状态和进度', '整理成结构化的项目报告']
+📋 Plan-Agent 参数: {'tasks': ['扫描当前目录结构，识别所有项目']}
+✅ 已初始化任务列表: ['扫描当前目录结构，识别所有项目']
 
 ============================================================
 🔄 Plan-Agent 第 2 次迭代
@@ -78,84 +80,32 @@ generator-agent
 📝 任务详情: {'task_name': '扫描当前目录结构，识别所有项目', 'task_status': 'PENDING', 'task_conclusion': ''}
 
   🔧 Generator 第 1 步
-  🛠️  Generator 选择工具: bash
-  🛠️  参数: {'command': 'ls -la', 'timeout': 30}
-  ✅ 工具执行结果: {'success': True, 'stdout': 'total 96\ndrwxr-xr-x   4 funnamer  staff    128  4月 10 21:59 __pycache__\ndrwxr-xr-x@ 11 funnamer  staff    352  4月 10 22:10 .\ndrwx------+ 19 funnamer  staff    608  4月 10 09:39 ..\n-rw-r--r--@  1 funnamer  staff   8196  4月 11 00:46 .DS_Store\n-rw-r--r--@  1 funnamer  staff    488  4月 10 22:06 .env\n-rw-r--r--@  1 funnamer  staff    421  4月 10 00:16 .gitignore\ndrwxr-xr-x@  8 funnamer  staff    256  4月 11 00:46 .idea\n-rw-r--r--@  1 funnamer  staff  21289  4月 10 22:01 main_agent.py\n-rw-r--r--@  1 funnamer  staff     21  4月 10 22:10 requirements.txt\ndrwxr-xr-x@  6 funnamer  staff    192  4月 10 20:26 tools\ndrwxr-xr-x@  5 funnamer  staff    160  4月 10 22:10 utils\n', 'stderr': '', 'returncode': 0}
+  🛠️  Generator 选择工具: glob
+  🛠️  参数: {'pattern': '**/*', 'path': '.', 'recursive': true}
+  ✅ 工具执行结果: {'success': True, 'matches': ['app/bootstrap.py', 'app/orchestration.py', 'prompting/builders.py', 'runtime/memory.py', 'tools/base_tool/bash_tool.py', 'tools/core/service.py', 'tools/search_tool/grep_tool.py']}
 
   🔧 Generator 第 2 步
-  🛠️  Generator 选择工具: bash
-  🛠️  参数: {'command': "find . -type f -name '*.py' -o -name '*.json' -o -name '*.yaml' -o -name '*.yml' -o -name '*.md' -o -name '*.txt' | head -20", 'timeout': 30}
-  ✅ 工具执行结果: {'success': True, 'stdout': './tools/search_tool/grep_tool.py\n./tools/search_tool/__init__.py\n./tools/search_tool/glob_tool.py\n./tools/__init__.py\n./tools/base_tool/edit_tool.py\n./tools/base_tool/bash_tool.py\n./tools/base_tool/__init__.py\n./tools/base_tool/write_tool.py\n./tools/base_tool/read_tool.py\n./requirements.txt\n./utils/__init__.py\n./utils/get_tools.py\n./main_agent.py\n', 'stderr': '', 'returncode': 0}
+  🛠️  Generator 选择工具: read
+  🛠️  参数: {'file_path': 'main_agent.py'}
+  ✅ 工具执行结果: {'success': True, 'content': 'from app.bootstrap import bootstrap_runtime\\nfrom app.orchestration import run_main_loop\\n...', 'total_lines': 16}
 
   🔧 Generator 第 3 步
-  🛠️  Generator 选择工具: read
-  🛠️  参数: {'file_path': './requirements.txt'}
-  ✅ 工具执行结果: {'success': True, 'content': 'python-dotenv>=1.0.0\n', 'total_lines': 1}
-
-  🔧 Generator 第 4 步
-  🛠️  Generator 选择工具: read
-  🛠️  参数: {'file_path': './main_agent.py', 'start_line': 1, 'end_line': 30}
-  ✅ 工具执行结果: {'success': True, 'content': 'import os\nimport json\nimport re\nfrom dotenv import load_dotenv\nfrom openai import OpenAI\nfrom langsmith import traceable\nfrom langsmith.wrappers import wrap_openai\nfrom tqdm.asyncio import tqdm_asyncio\n\n# 导入工具类\nfrom tools.base_tool import BashTool, ReadTool, EditTool, WriteTool\nfrom tools.search_tool import GrepTool, GlobTool\n\n# 导入工具注册表\nfrom utils.get_tools import get_registry, execute_tool\n\n\nclass ToDoList:\n    """待办事项列表管理类"""\n\n    def __init__(self):\n        self.tasks = []\n\n    def add_task(self, task_name: str, task_status: str = "PENDING", task_conclusion: str = ""):\n        self.tasks.append({\n            "task_name": task_name,\n            "task_status": task_status,\n            "task_conclusion": task_conclusion\n        })\n\n', 'total_lines': 541}
-
-  🔧 Generator 第 5 步
-  🛠️  Generator 选择工具: bash
-  🛠️  参数: {'command': "find . -maxdepth 2 -type f -name '*.py' -o -name '*.md' -o -name '*.txt' -o -name '*.json' -o -name '*.yaml' -o -name '*.yml' -o -name 'setup.py' -o -name 'pyproject.toml' -o -name 'README*' | sort", 'timeout': 30}
-  ✅ 工具执行结果: {'success': True, 'stdout': './main_agent.py\n./requirements.txt\n./tools/__init__.py\n./utils/__init__.py\n./utils/get_tools.py\n', 'stderr': '', 'returncode': 0}
-
-  🔧 Generator 第 6 步
-  🛠️  Generator 选择工具: read
-  🛠️  参数: {'file_path': './tools/__init__.py'}
-  ✅ 工具执行结果: {'success': True, 'content': '', 'total_lines': 0}
-
-  🔧 Generator 第 7 步
-  🛠️  Generator 选择工具: bash
-  🛠️  参数: {'command': "find . -maxdepth 2 -name 'README*' -o -name 'readme*' -o -name 'Readme*'", 'timeout': 30}
-  ✅ 工具执行结果: {'success': True, 'stdout': '', 'stderr': '', 'returncode': 0}
-
-  🔧 Generator 第 8 步
   🛠️  Generator 选择工具: update_task_conclusion
-  🛠️  参数: {'conclusion': '成功扫描当前目录结构，识别出一个Python智能体项目。项目主要包含以下内容：\n\n1. **项目类型**: Python智能体/自动化工具项目\n2. **核心文件**: \n   - main_agent.py (541行代码，主程序文件)\n   - requirements.txt (依赖: python-dotenv>=1.0.0)\n3. **目录结构**: \n   - tools/ - 工具模块目录\n     - base_tool/ - 基础工具类(bash_tool.py, read_tool.py, edit_tool.py, write_tool.py)\n     - search_tool/ - 搜索工具类(grep_tool.py, glob_tool.py)\n   - utils/ - 工具函数目录(get_tools.py)\n   - __pycache__/ - Python缓存目录\n4. **配置文件**: \n   - .env - 环境变量文件\n   - .gitignore - Git忽略配置\n   - .idea/ - IDE配置文件目录\n5. **项目特点**: \n   - 使用OpenAI API和LangSmith进行追踪\n   - 实现了任务管理功能(ToDoList类)\n   - 模块化工具设计，支持扩展\n\n这是一个功能完整的智能体项目，具备文件操作、命令执行、搜索等基础能力，适合作为自动化任务执行平台。'}
-  📝 Generator 完成任务，结论: 成功扫描当前目录结构，识别出一个Python智能体项目。项目主要包含以下内容：
-
-1. **项目类型**: Python智能体/自动化工具项目
-2. **核心文件**:
-   - main_agent.py (541行代码，主程序文件)
-   - requirements.txt (依赖: python-dotenv>=1.0.0)
-3. **目录结构**:
-   - tools/ - 工具模块目录
-     - base_tool/ - 基础工具类(bash_tool.py, read_tool.py, edit_tool.py, write_tool.py)
-     - search_tool/ - 搜索工具类(grep_tool.py, glob_tool.py)
-   - utils/ - 工具函数目录(get_tools.py)
-   - __pycache__/ - Python缓存目录
-4. **配置文件**:
-   - .env - 环境变量文件
-   - .gitignore - Git忽略配置
-   - .idea/ - IDE配置文件目录
-5. **项目特点**:
-   - 使用OpenAI API和LangSmith进行追踪
-   - 实现了任务管理功能(ToDoList类)
-   - 模块化工具设计，支持扩展
-
-这是一个功能完整的智能体项目，具备文件操作、命令执行、搜索等基础能力，适合作为自动化任务执行平台。
-
+  🛠️  参数: {'conclusion': '当前目录中识别出一个模块化的 miniMaster 项目，核心结构包含 app、prompting、runtime 和 tools 四个主要子系统。main_agent.py 只保留入口职责，真正的编排逻辑位于 app/orchestration.py，工具系统由 tools/core/ToolService 统一管理。'}
+  📝 Generator 完成任务，结论: 当前目录中识别出一个模块化的 miniMaster 项目，核心结构包含 app、prompting、runtime 和 tools 四个主要子系统。main_agent.py 只保留入口职责，真正的编排逻辑位于 app/orchestration.py，工具系统由 tools/core/ToolService 统一管理。
 ```
 validate-agent
 ```log
     🔍 Validate-Agent 第 1 步
-    🛠️  Validate-Agent 选择工具: bash
-    🛠️  参数: {'command': 'ls -la'}
-    ✅ 验证工具执行结果: {'success': True, 'stdout': 'total 96\ndrwxr-xr-x   4 funnamer  staff    128  4月 10 21:59 __pycache__\ndrwxr-xr-x@ 11 funnamer  staff    352  4月 10 22:10 .\ndrwx------+ 19 funnamer  staff    608  4月 10 09:39 ..\n-rw-r--r--@  1 funnamer  staff   8196  4月 11 00:46 .DS_Store\n-rw-r--r--@  1 funnamer  staff    488  4月 10 22:06 .env\n-rw-r--r--@  1 funnamer  staff    421  4月 10 00:16 .gitignore\ndrwxr-xr-x@  8 funnamer  staff    256  4月 11 00:46 .idea\n-rw-r--r--@  1 funnamer  staff  21289  4月 10 22:01 main_agent.py\n-rw-r--r--@  1 funnamer  staff     21  4月 10 22:10 requirements.txt\ndrwxr-xr-x@  6 funnamer  staff    192  4月 10 20:26 tools\ndrwxr-xr-x@  5 funnamer  staff    160  4月 10 22:10 utils\n', 'stderr': '', 'returncode': 0}
+    🛠️  Validate-Agent 选择工具: read
+    🛠️  参数: {'file_path': 'app/orchestration.py'}
+    ✅ 验证工具执行结果: {'success': True, 'content': 'from copy import deepcopy\\n...\\ndef run_main_loop(runtime: AgentRuntime, max_iter: int = 30):\\n...', 'total_lines': 257}
 
     🔍 Validate-Agent 第 2 步
-    🛠️  Validate-Agent 选择工具: read
-    🛠️  参数: {'file_path': 'requirements.txt'}
-    ✅ 验证工具执行结果: {'success': True, 'content': 'python-dotenv>=1.0.0\n', 'total_lines': 1}
-
-    🔍 Validate-Agent 第 3 步
     🛠️  Validate-Agent 选择工具: validate_tool
-    🛠️  参数: {'status': '无效', 'reason': '任务结论声称收集了项目结构、主程序信息、依赖信息和工具模块信息，但working memory显示只执行了查看目录结构（ls -la）和读取依赖文件（requirements.txt）两个操作。没有对主程序main_agent.py进行内容检查，也没有对tools和utils目录中的工具模块进行验证。任务结论中关于main_agent.py的详细描述（包含ToDoList类、使用OpenAI和LangSmith等）以及工具模块的具体功能描述缺乏对应的执行记录支持，因此任务完成不充分。'}
-    📊 验证结果: 无效, 原因: 任务结论声称收集了项目结构、主程序信息、依赖信息和工具模块信息，但working memory显示只执行了查看目录结构（ls -la）和读取依赖文件（requirements.txt）两个操作。没有对主程序main_agent.py进行内容检查，也没有对tools和utils目录中的工具模块进行验证。任务结论中关于main_agent.py的详细描述（包含ToDoList类、使用OpenAI和LangSmith等）以及工具模块的具体功能描述缺乏对应的执行记录支持，因此任务完成不充分。
-    ❌ 验证失败，将返回 Generator 重试
+    🛠️  参数: {'status': '有效', 'reason': 'glob 与 read 的现有证据已经覆盖目录结构与主编排入口，结论与任务要求一致。'}
+    📊 验证结果: 有效, 原因: glob 与 read 的现有证据已经覆盖目录结构与主编排入口，结论与任务要求一致。
+    ✅ 验证通过！
 ```
 
 最终生成的项目报告：[生成的结果](./code/miniMaster2.0/项目报告.md)
@@ -167,18 +117,24 @@ validate-agent
 
 ```
 code/miniMaster2.0/
+├── app/
+│   ├── bootstrap.py        # 入口初始化，装配 runtime
+│   ├── agent_runner.py     # 模型调用与 function call 解析入口
+│   ├── agent_config.py     # 各阶段共享配置与静态上下文
+│   ├── orchestration.py    # Plan / Generator / Validate 主编排逻辑
+│   └── loop_control.py     # 缓存与重复动作防护
+├── prompting/
+│   ├── builders.py         # Prompt 构造函数
+│   ├── policies.py         # 不同 Agent 的动作策略
+│   └── protocol.py         # 原生 function call 协议适配
+├── runtime/
+│   ├── todo.py             # 任务状态管理
+│   └── memory.py           # 动态工作记忆管理
 ├── tools/
 │   ├── base_tool/          # 基础系统工具
-│   │   ├── bash_tool.py    # Shell 命令执行
-│   │   ├── read_tool.py    # 文件读取
-│   │   ├── write_tool.py   # 文件写入
-│   │   └── edit_tool.py    # 文件编辑
-│   └── search_tool/        # 搜索检索工具
-│       ├── glob_tool.py    # 通配符文件查找
-│       └── grep_tool.py    # 正则文本搜索
-├── utils/
-│   └── get_tools.py        # 工具统一管理
-├── main_agent.py           # 主智能体入口
+│   ├── search_tool/        # 搜索检索工具
+│   └── core/               # 工具注册、发现与执行服务
+├── main_agent.py           # 程序入口
 └── requirements.txt        # 依赖包列表
 ```
 
