@@ -4,4 +4,4 @@
   - [第3章：上下文工程](./chapter3/context_engineering.md)
   - [第4章：Harness Engineering](./chapter4/harness_engineering.md)
   - [第5章：从提示词到上下文到harness的演进](./chapter5/evolution.md)
-  - [第6章：小项目实践](./chapter6/miniMaster.md)
+  - [第6章：miniMaster项目实践](./chapter6/miniMaster.md)
